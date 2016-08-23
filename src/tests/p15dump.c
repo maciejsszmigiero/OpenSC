@@ -23,7 +23,7 @@ static int dump_objects(const char *what, int type)
 	printf("\nEnumerating %s... ", what);
 	fflush(stdout);
 
-	if (SC_SUCCESS != sc_lock(card))
+	if (SC_SUCCESS != sc_lock(card, 0))
 		return 1;
 	count = sc_pkcs15_get_objects(p15card, type, NULL, 0);
 	if (count < 0) {
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 		return 1;
 	printf("Looking for a PKCS#15 compatible Smart Card... ");
 	fflush(stdout);
-	if (SC_SUCCESS != sc_lock(card))
+	if (SC_SUCCESS != sc_lock(card, 0))
 		return 1;
 	i = sc_pkcs15_bind(card, NULL, &p15card);
 	/* Keep card locked to prevent useless calls to sc_logout */

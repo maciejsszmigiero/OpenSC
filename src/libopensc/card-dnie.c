@@ -1286,7 +1286,7 @@ static int dnie_select_file(struct sc_card *card,
 		sc_log(ctx, "select_file(PATH): requested:%s ", sc_dump_hex(in_path->value, in_path->len));
 
 		/* convert to SC_PATH_TYPE_FILE_ID */
-		res = sc_lock(card); /* lock to ensure path traversal */
+		res = sc_lock(card, 0); /* lock to ensure path traversal */
 		LOG_TEST_RET(ctx, res, "sc_lock() failed");
 		if (memcmp(in_path->value, "\x3F\x00", 2) == 0) {
 			/* if MF, use the name as path */

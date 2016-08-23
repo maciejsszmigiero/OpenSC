@@ -1081,7 +1081,7 @@ md_pkcs15_delete_object(PCARD_DATA pCardData, struct sc_pkcs15_object *obj)
 		return SCARD_S_SUCCESS;
 	logprintf(pCardData, 3, "MdDeleteObject('%.*s',type:0x%X) called\n", (int) sizeof obj->label, obj->label, obj->type);
 
-	rv = sc_lock(card);
+	rv = sc_lock(card, 0);
 	if (rv)   {
 		logprintf(pCardData, 3, "MdDeleteObject(): cannot lock card\n");
 		return SCARD_F_INTERNAL_ERROR;
@@ -2206,7 +2206,7 @@ md_pkcs15_generate_key(PCARD_DATA pCardData, DWORD idx, DWORD key_type, DWORD ke
 	auth_info = (struct sc_pkcs15_auth_info *) pin_obj->data;
 	keygen_args.prkey_args.auth_id = pub_args.auth_id = auth_info->auth_id;
 
-	rv = sc_lock(card);
+	rv = sc_lock(card, 0);
 	if (rv)   {
 		logprintf(pCardData, 3, "MdGenerateKey(): cannot lock card\n");
 		return SCARD_F_INTERNAL_ERROR;
@@ -2327,7 +2327,7 @@ md_pkcs15_store_key(PCARD_DATA pCardData, DWORD idx, DWORD key_type, BYTE *blob,
 	pin_obj = vs->pin_objs[PinId];
 	prkey_args.auth_id = ((struct sc_pkcs15_auth_info *) pin_obj->data)->auth_id;
 
-	rv = sc_lock(card);
+	rv = sc_lock(card, 0);
 	if (rv)   {
 		logprintf(pCardData, 3, "MdStoreKey(): cannot lock card\n");
 		return SCARD_F_INTERNAL_ERROR;
@@ -2433,7 +2433,7 @@ md_pkcs15_store_certificate(PCARD_DATA pCardData, char *file_name, unsigned char
 		logprintf(pCardData, 3, "MdStoreCert(): store certificate(idx:%i,id:%s)\n", idx, sc_pkcs15_print_id(&cont->id));
 	}
 
-	rv = sc_lock(card);
+	rv = sc_lock(card, 0);
 	if (rv)   {
 		logprintf(pCardData, 3, "MdStoreCert(): cannot lock card\n");
 		return SCARD_F_INTERNAL_ERROR;

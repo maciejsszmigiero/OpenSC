@@ -557,7 +557,7 @@ int sc_transmit_apdu(sc_card_t *card, sc_apdu_t *apdu)
 	if (r != SC_SUCCESS)
 		return SC_ERROR_INVALID_ARGUMENTS;
 
-	r = sc_lock(card);	/* acquire card lock*/
+	r = sc_lock(card, 0);	/* acquire card lock */
 	if (r != SC_SUCCESS) {
 		sc_log(card->ctx, "unable to acquire lock");
 		return r;

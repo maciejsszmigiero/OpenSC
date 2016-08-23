@@ -67,7 +67,7 @@ static int ask_and_verify_pin(struct sc_pkcs15_object *pin_obj)
 	sprintf(prompt, "Please enter PIN code [%.*s]: ", (int) sizeof pin_obj->label, pin_obj->label);
 	pass = (u8 *) getpass(prompt);
 
-	if (SC_SUCCESS != sc_lock(card))
+	if (SC_SUCCESS != sc_lock(card, 0))
 		return 1;
 	i = sc_pkcs15_verify_pin(p15card, pin_obj, pass, strlen((char *) pass));
 	if (SC_SUCCESS != sc_unlock(card))
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
 		printf("Slot is capable of doing pinpad operations!\n");
 	printf("Looking for a PKCS#15 compatible Smart Card... ");
 	fflush(stdout);
-	if (SC_SUCCESS != sc_lock(card))
+	if (SC_SUCCESS != sc_lock(card, 0))
 		return 1;
 	i = sc_pkcs15_bind(card, NULL, &p15card);
 	if (SC_SUCCESS != sc_unlock(card))
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 	}
 	printf("found.\n");
 	printf("Enumerating PIN codes...\n");
-	if (SC_SUCCESS != sc_lock(card))
+	if (SC_SUCCESS != sc_lock(card, 0))
 		return 1;
 	count = enum_pins(&objs);
 	if (SC_SUCCESS != sc_unlock(card))

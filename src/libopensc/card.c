@@ -385,7 +385,7 @@ int sc_reset(sc_card_t *card, int do_cold_reset)
 	return r;
 }
 
-int sc_lock(sc_card_t *card)
+int sc_lock(sc_card_t *card, int resetok)
 {
 	int r = 0, r2 = 0;
 	int was_reset = 0;
@@ -401,14 +401,15 @@ int sc_lock(sc_card_t *card)
 		return r;
 	if (card->lock_count == 0) {
 		if (card->reader->ops->lock != NULL) {
-			r = card->reader->ops->lock(card->reader);
-			while (r == SC_ERROR_CARD_RESET || r == SC_ERROR_READER_REATTACHED) {
+			r = card->reader->ops->lock(card->reader, resetok);
+			while (resetok && r == SC_ERROR_CARD_RESET) {
 				/* invalidate cache */
 				memset(&card->cache, 0, sizeof(card->cache));
 				card->cache.valid = 0;
 				if (was_reset++ > 4) /* TODO retry a few times */
 					break;
-				r = card->reader->ops->lock(card->reader);
+				r = card->reader->ops->lock(card->reader,
+							    resetok);
 			}
 			if (r == 0)
 				reader_lock_obtained = 1;
@@ -454,15 +455,22 @@ int sc_unlock(sc_card_t *card)
 
 	assert(card->lock_count >= 1);
 	if (--card->lock_count == 0) {
+		const int invalidate_on_unlock =
 #ifdef INVALIDATE_CARD_CACHE_IN_UNLOCK
-		/* invalidate cache */
-		memset(&card->cache, 0, sizeof(card->cache));
-		card->cache.valid = 0;
-		sc_log(card->ctx, "cache invalidated");
+			1;
+#else
+			0;
 #endif
 		/* release reader lock */
 		if (card->reader->ops->unlock != NULL)
 			r = card->reader->ops->unlock(card->reader);
+
+		if (invalidate_on_unlock || r == SC_ERROR_CARD_RESET) {
+			/* invalidate cache */
+			memset(&card->cache, 0, sizeof(card->cache));
+			card->cache.valid = 0;
+			sc_log(card->ctx, "cache invalidated");
+		}
 	}
 	r2 = sc_mutex_unlock(card->ctx, card->mutex);
 	if (r2 != SC_SUCCESS) {
@@ -557,7 +565,7 @@ int sc_read_binary(sc_card_t *card, unsigned int idx,
 		int bytes_read = 0;
 		unsigned char *p = buf;
 
-		r = sc_lock(card);
+		r = sc_lock(card, 0);
 		LOG_TEST_RET(card->ctx, r, "sc_lock() failed");
 		while (count > 0) {
 			size_t n = count > max_le ? max_le : count;
@@ -599,7 +607,7 @@ int sc_write_binary(sc_card_t *card, unsigned int idx,
 		int bytes_written = 0;
 		const u8 *p = buf;
 
-		r = sc_lock(card);
+		r = sc_lock(card, 0);
 		LOG_TEST_RET(card->ctx, r, "sc_lock() failed");
 		while (count > 0) {
 			size_t n = count > max_lc? max_lc : count;
@@ -651,7 +659,7 @@ int sc_update_binary(sc_card_t *card, unsigned int idx,
 		int bytes_written = 0;
 		const u8 *p = buf;
 
-		r = sc_lock(card);
+		r = sc_lock(card, 0);
 		LOG_TEST_RET(card->ctx, r, "sc_lock() failed");
 		while (count > 0) {
 			size_t n = count > max_lc? max_lc : count;

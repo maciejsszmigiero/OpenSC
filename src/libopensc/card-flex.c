@@ -586,7 +586,7 @@ static int flex_select_file(sc_card_t *card, const sc_path_t *path,
 			return 0;
 		if (pathlen != 2 || memcmp(pathptr, "\x3F\x00", 2) != 0) {
 			locked = 1;
-			r = sc_lock(card);
+			r = sc_lock(card, 0);
 			SC_TEST_RET(card->ctx, SC_LOG_DEBUG_NORMAL, r, "sc_lock() failed");
 			if (!magic_done && memcmp(pathptr, "\x3F\x00", 2) != 0) {
 				r = select_file_id(card, (const u8 *) "\x3F\x00", 2, 0, NULL);

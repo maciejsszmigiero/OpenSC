@@ -784,7 +784,7 @@ static int gids_set_security_env(sc_card_t *card,
 	apdu.datalen = r;
 	apdu.data = sbuf;
 	if (se_num > 0) {
-		r = sc_lock(card);
+		r = sc_lock(card, 0);
 		LOG_TEST_RET(card->ctx, r, "sc_lock() failed");
 		locked = 1;
 	}

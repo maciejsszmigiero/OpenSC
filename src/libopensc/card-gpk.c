@@ -619,7 +619,7 @@ try_again:
 		leaf_type = GPK_SEL_MF;
 	} else {
 		if (!locked++) {
-			r = sc_lock(card);
+			r = sc_lock(card, 0);
 			SC_TEST_RET(card->ctx, SC_LOG_DEBUG_NORMAL, r, "sc_lock() failed");
 		}
 
@@ -1598,7 +1598,7 @@ static int gpk_get_info(sc_card_t *card, int p1, int p2, u8 *buf,
 	 * calling logout(), which in turn does a SELECT MF
 	 * without collecting the response :)
 	 */
-	r = sc_lock(card);
+	r = sc_lock(card, 0);
 	SC_TEST_RET(card->ctx, SC_LOG_DEBUG_NORMAL, r, "sc_lock() failed");
 
 	do {

@@ -374,7 +374,7 @@ _sc_pkcs15_verify_pin(struct sc_pkcs15_card *p15card, struct sc_pkcs15_object *p
 			data.pin1.prompt = "Please enter PIN";
 	}
 
-	r = sc_lock(card);
+	r = sc_lock(card, 0);
 	LOG_TEST_RET(ctx, r, "sc_lock() failed");
 
 	/* the path in the pin object is optional */
@@ -419,7 +419,7 @@ int sc_pkcs15_change_pin(struct sc_pkcs15_card *p15card,
 	LOG_TEST_RET(ctx, r, "New PIN value do not conform PIN policy");
 
 	card = p15card->card;
-	r = sc_lock(card);
+	r = sc_lock(card, 0);
 	LOG_TEST_RET(ctx, r, "sc_lock() failed");
 	/* the path in the pin object is optional */
 	if ((auth_info->path.len > 0) || ((auth_info->path.aid.len > 0))) {
@@ -525,7 +525,7 @@ int sc_pkcs15_unblock_pin(struct sc_pkcs15_card *p15card,
 	r = _validate_pin(p15card, puk_info, puklen);
 	LOG_TEST_RET(ctx, r, "PIN do not conforms PIN policy");
 
-	r = sc_lock(card);
+	r = sc_lock(card, 0);
 	LOG_TEST_RET(ctx, r, "sc_lock() failed");
 
 	/* the path in the pin object is optional */
@@ -606,7 +606,7 @@ int sc_pkcs15_get_pin_info(struct sc_pkcs15_card *p15card,
 
 	LOG_FUNC_CALLED(ctx);
 
-	r = sc_lock(card);
+	r = sc_lock(card, 0);
 	if (r != SC_SUCCESS)
 		return r;
 

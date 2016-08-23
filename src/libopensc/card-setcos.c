@@ -633,7 +633,7 @@ static int setcos_set_security_env2(sc_card_t *card,
 	apdu.data = sbuf;
 	apdu.resplen = 0;
 	if (se_num > 0) {
-		r = sc_lock(card);
+		r = sc_lock(card, 0);
 		SC_TEST_RET(card->ctx, SC_LOG_DEBUG_NORMAL, r, "sc_lock() failed");
 		locked = 1;
 	}

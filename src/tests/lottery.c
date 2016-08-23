@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 				return 1;
 			}
 		}
-		sc_lock(card);
+		sc_lock(card, 0);
 		r = sc_get_challenge(card, buf, 14);
 		sc_unlock(card);
 		if (r == 0) {

@@ -92,7 +92,7 @@ static int use_key(struct sc_pkcs15_card *p15card,
 	int revalidated_cached_pin = 0;
 	const struct sc_pkcs15_prkey_info *prkey = (const struct sc_pkcs15_prkey_info *) obj->data;
 
-	r = sc_lock(p15card->card);
+	r = sc_lock(p15card->card, 0);
 	LOG_TEST_RET(p15card->card->ctx, r, "sc_lock() failed");
 
 	do {

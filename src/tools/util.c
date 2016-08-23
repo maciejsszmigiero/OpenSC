@@ -156,7 +156,7 @@ autofound:
 	if (verbose)
 		printf("Using card driver %s.\n", card->driver->name);
 
-	r = sc_lock(card);
+	r = sc_lock(card, 0);
 	if (r < 0) {
 		fprintf(stderr, "Failed to lock card: %s\n", sc_strerror(r));
 		sc_disconnect_card(card);

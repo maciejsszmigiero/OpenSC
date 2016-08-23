@@ -1235,7 +1235,7 @@ sc_pkcs15_bind(struct sc_card *card, struct sc_aid *aid,
 			p15card->opts.use_file_cache, p15card->opts.use_pin_cache,p15card->opts.pin_cache_counter,
 			p15card->opts.pin_cache_ignore_user_consent);
 
-	r = sc_lock(card);
+	r = sc_lock(card, 0);
 	if (r) {
 		sc_log(ctx, "sc_lock() failed: %s", sc_strerror(r));
 		sc_pkcs15_card_free(p15card);
@@ -2350,7 +2350,7 @@ sc_pkcs15_read_file(struct sc_pkcs15_card *p15card, const struct sc_path *in_pat
 	}
 
 	if (r) {
-		r = sc_lock(p15card->card);
+		r = sc_lock(p15card->card, 0);
 		LOG_TEST_RET(ctx, r, "sc_lock() failed");
 		r = sc_select_file(p15card->card, in_path, &file);
 		if (r)

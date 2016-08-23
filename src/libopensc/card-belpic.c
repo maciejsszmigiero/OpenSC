@@ -727,7 +727,7 @@ static int get_language(sc_card_t *card)
 	apdu.resplen = 0;
 	apdu.le = 0;
 
-	r = sc_lock(card);
+	r = sc_lock(card, 0);
 	if (r < 0)
 		goto prefs_error;
 

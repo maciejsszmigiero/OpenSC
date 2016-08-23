@@ -1713,7 +1713,7 @@ pkcs15_initialize(struct sc_pkcs11_slot *slot, void *ptr,
 			return sc_to_cryptoki_error(SC_ERROR_INTERNAL, "C_Login");
 		p15card = fw_data->p15_card;
 
-		rc = sc_lock(p11card->card);
+		rc = sc_lock(p11card->card, 0);
 		if (rc < 0)
 			return sc_to_cryptoki_error(rc, "C_InitToken");
 
@@ -1853,7 +1853,7 @@ pkcs15_init_pin(struct sc_pkcs11_slot *slot, CK_CHAR_PTR pPin, CK_ULONG ulPinLen
 		return sc_to_cryptoki_error(rc, "C_InitPIN");
 	}
 
-	rc = sc_lock(p11card->card);
+	rc = sc_lock(p11card->card, 0);
 	if (rc < 0)
 		return sc_to_cryptoki_error(rc, "C_InitPIN");
 
@@ -2527,7 +2527,7 @@ pkcs15_create_object(struct sc_pkcs11_slot *slot, CK_ATTRIBUTE_PTR pTemplate, CK
 	if (_token == TRUE) {
 		struct sc_aid *aid = NULL;
 
-		rc = sc_lock(p11card->card);
+		rc = sc_lock(p11card->card, 0);
 		if (rc < 0)
 			return sc_to_cryptoki_error(rc, "C_CreateObject");
 
@@ -2706,7 +2706,7 @@ pkcs15_gen_keypair(struct sc_pkcs11_slot *slot, CK_MECHANISM_PTR pMechanism,
 	if (!fw_data)
 		return sc_to_cryptoki_error(SC_ERROR_INTERNAL, "C_GenerateKeyPair");
 
-	rc = sc_lock(p11card->card);
+	rc = sc_lock(p11card->card, 0);
 	if (rc < 0)
 		return sc_to_cryptoki_error(rc, "C_GenerateKeyPair");
 
@@ -2871,7 +2871,7 @@ pkcs15_skey_destroy(struct sc_pkcs11_session *session, void *object)
 	if (!fw_data)
 		return sc_to_cryptoki_error(SC_ERROR_INTERNAL, "C_GenerateKeyPair");
 	/* TODO assuming this is a session only object. */
-	rv = sc_lock(p11card->card);
+	rv = sc_lock(p11card->card, 0);
 	if (rv < 0)
 		return sc_to_cryptoki_error(rv, "C_DestroyObject");
 
@@ -2909,7 +2909,7 @@ pkcs15_any_destroy(struct sc_pkcs11_session *session, void *object)
 	if (!fw_data)
 		return sc_to_cryptoki_error(SC_ERROR_INTERNAL, "C_DestroyObject");
 
-	rv = sc_lock(p11card->card);
+	rv = sc_lock(p11card->card, 0);
 	if (rv < 0)
 		return sc_to_cryptoki_error(rv, "C_DestroyObject");
 
@@ -3036,7 +3036,7 @@ pkcs15_set_attrib(struct sc_pkcs11_session *session, struct sc_pkcs15_object *p1
 	if (!fw_data)
 		return sc_to_cryptoki_error(SC_ERROR_INTERNAL, "C_SetAttributeValue");
 
-	rv = sc_lock(p11card->card);
+	rv = sc_lock(p11card->card, 0);
 	if (rv < 0)
 		return sc_to_cryptoki_error(rv, "C_SetAttributeValue");
 
@@ -3570,7 +3570,7 @@ pkcs15_prkey_sign(struct sc_pkcs11_session *session, void *obj,
 		return CKR_MECHANISM_INVALID;
 	}
 
-	rv = sc_lock(p11card->card);
+	rv = sc_lock(p11card->card, 0);
 	if (rv < 0)
 		return sc_to_cryptoki_error(rv, "C_Sign");
 
@@ -3642,7 +3642,7 @@ pkcs15_prkey_decrypt(struct sc_pkcs11_session *session, void *obj,
 		return CKR_MECHANISM_INVALID;
 	}
 
-	rv = sc_lock(p11card->card);
+	rv = sc_lock(p11card->card, 0);
 	if (rv < 0)
 		return sc_to_cryptoki_error(rv, "C_Decrypt");
 
@@ -3707,7 +3707,7 @@ pkcs15_prkey_derive(struct sc_pkcs11_session *session, void *obj,
 
 	if (pData != NULL && *pulDataLen > 0) { /* TODO DEE only test for NULL? */
 	    need_unlock = 1;
-	    rv = sc_lock(p11card->card);
+	    rv = sc_lock(p11card->card, 0);
 	    if (rv < 0)
 		    return sc_to_cryptoki_error(rv, "C_DeriveKey");
 	}
@@ -4068,7 +4068,7 @@ pkcs15_dobj_get_value(struct sc_pkcs11_session *session,
 	if (!fw_data)
 		return sc_to_cryptoki_error(SC_ERROR_INTERNAL, "C_GetAttributeValue");
 
-	rv = sc_lock(card);
+	rv = sc_lock(card, 0);
 	if (rv < 0)
 		return sc_to_cryptoki_error(rv, "C_GetAttributeValue");
 
@@ -4803,7 +4803,7 @@ lock_card(struct pkcs15_fw_data *fw_data)
 {
 	int	rc;
 
-	if ((rc = sc_lock(fw_data->p15_card->card)) < 0)
+	if ((rc = sc_lock(fw_data->p15_card->card, 0)) < 0)
 		sc_log(context, "Failed to lock card (%d)", rc);
 	else
 		fw_data->locked++;

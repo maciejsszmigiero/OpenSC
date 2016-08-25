@@ -402,12 +402,13 @@ if test "${enable_thread_locking}" = "yes"; then
 fi
 
 if test "${enable_minidriver}" = "yes"; then
-	dnl win32 special test for minidriver
-	AC_CHECK_HEADER(
-		[cardmod.h],
-		,
-		[AC_MSG_ERROR([cardmod.h is not found and required for minidriver])]
-	)
+	# We must cope with mingw32 that does not have winscard.h, mingw64 has it.
+	AC_CHECK_HEADERS([winscard.h],,[AC_MSG_ERROR([winscard.h is required for minidriver])])
+
+	if test ! -r "${srcdir}/src/minidriver/cardmod.h"; then
+		AC_MSG_ERROR([cardmod.h from CNG was not found but is required for minidriver (place it in src/minidriver)])
+	fi
+
 	AC_DEFINE([ENABLE_MINIDRIVER], [1], [Enable minidriver support])
 fi
 

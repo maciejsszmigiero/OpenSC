@@ -323,10 +323,12 @@ static int ias_compute_signature(sc_card_t *card, const u8 *data,
 	SC_FUNC_CALLED(ctx, SC_LOG_DEBUG_VERBOSE);
 
 	if (data_len > 64) {
-		sc_debug(ctx, SC_LOG_DEBUG_NORMAL, "error: input data too long: %lu bytes\n", data_len);
+		sc_debug(ctx, SC_LOG_DEBUG_NORMAL,
+			 "error: input data too long: %"SC_FORMAT_LEN_SIZE_T"u bytes\n",
+			 data_len);
 		return SC_ERROR_INVALID_ARGUMENTS;
 	}
-	
+
 	sc_format_apdu(card, &apdu, SC_APDU_CASE_4_SHORT, 0x88, 0x02, 0x00);
 	apdu.data = (u8 *) data;
 	apdu.lc = data_len;

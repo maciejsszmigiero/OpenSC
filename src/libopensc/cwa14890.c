@@ -117,19 +117,19 @@ static void cwa_trace_apdu(sc_card_t * card, sc_apdu_t * apdu, int flag)
 		if (apdu->datalen > 0) {	/* apdu data to show */
 			buf = cwa_hexdump(apdu->data, apdu->datalen);
 			sc_log(card->ctx,
-			       "\nAPDU before encode: ==================================================\nCLA: %02X INS: %02X P1: %02X P2: %02X Lc: %02X Le: %02X DATA: [%5u bytes]\n%s======================================================================\n",
+			       "\nAPDU before encode: ==================================================\nCLA: %02X INS: %02X P1: %02X P2: %02X Lc: %02"SC_FORMAT_LEN_SIZE_T"X Le: %02"SC_FORMAT_LEN_SIZE_T"X DATA: [%5"SC_FORMAT_LEN_SIZE_T"u bytes]\n%s======================================================================\n",
 			       apdu->cla, apdu->ins, apdu->p1, apdu->p2,
 			       apdu->lc, apdu->le, apdu->datalen, buf);
 		} else {	/* apdu data field is empty */
 			sc_log(card->ctx,
-			       "\nAPDU before encode: ==================================================\nCLA: %02X INS: %02X P1: %02X P2: %02X Lc: %02X Le: %02X (NO DATA)\n======================================================================\n",
+			       "\nAPDU before encode: ==================================================\nCLA: %02X INS: %02X P1: %02X P2: %02X Lc: %02"SC_FORMAT_LEN_SIZE_T"X Le: %02"SC_FORMAT_LEN_SIZE_T"X (NO DATA)\n======================================================================\n",
 			       apdu->cla, apdu->ins, apdu->p1, apdu->p2,
 			       apdu->lc, apdu->le);
 		}
 	} else {		/* apdu response */
 		buf = cwa_hexdump(apdu->resp, apdu->resplen);
 		sc_log(card->ctx,
-		       "\nAPDU response after decode: ==========================================\nSW1: %02X SW2: %02X RESP: [%5u bytes]\n%s======================================================================\n",
+		       "\nAPDU response after decode: ==========================================\nSW1: %02X SW2: %02X RESP: [%5"SC_FORMAT_LEN_SIZE_T"u bytes]\n%s======================================================================\n",
 		       apdu->sw1, apdu->sw2, apdu->resplen, buf);
 	}
 #endif
@@ -336,7 +336,7 @@ static int cwa_parse_tlv(sc_card_t * card,
 		}
 		tlv->data = buffer + n + j;
 		tlv->buflen = j + tlv->len;;
-		sc_log(ctx, "Found Tag: '0x%02X': Length: '%d 'Value:\n%s",
+		sc_log(ctx, "Found Tag: '0x%02X': Length: '%"SC_FORMAT_LEN_SIZE_T"u' Value:\n%s",
 		       tlv->tag, tlv->len, sc_dump_hex(tlv->data, tlv->len));
 		/* set index to next Tag to jump to */
 		next = tlv->buflen;
